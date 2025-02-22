@@ -28,7 +28,7 @@ class D2HCGModel(nn.Module):
             nn.ReLU(),  
             nn.MaxPool2d(2)
         )
-        
+        self.dropout = nn.Dropout2d(p=0.1)
         self.head1 = nn.Linear(64*14*14, num_classes)
         self.head2 = nn.Linear(64*14*14, num_classes)
         self.head3 = nn.Linear(64*14*14, num_classes)
@@ -37,7 +37,7 @@ class D2HCGModel(nn.Module):
     def forward(self, x):
         features = self.feature_extractor(x)
         features = features.view(features.size(0), -1)
-        p1 = torch.softmax(self.head1(features), dim=1) 
+        p1 = torch.softmax(self.dropout(self.head1(features)), dim=1) 
         p2 = torch.softmax(self.head2(features), dim=1)  
         p3 = torch.softmax(self.head3(features), dim=1)  
         return p1, p2, p3  # Return all three outputs
